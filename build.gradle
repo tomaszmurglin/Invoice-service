@@ -1,0 +1,57 @@
+plugins {
+    id "org.sonarqube" version "2.7"
+    id "java"
+    id "io.freefair.lombok" version "5.1.0"
+}
+
+if (JavaVersion.current() != JavaVersion.VERSION_11) {
+    throw new GradleException("This build must be run with Java 11")
+}
+
+int sonarPort = 9000
+String vertXVersion = '3.9.1'
+String log4jVersion = '2.13.3'
+
+sourceSets {
+    main.java.srcDirs += 'src/main/java'
+    main.resources.srcDirs += "src/main/resources"
+    test.java.srcDirs += "src/test/java"
+}
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "vertx.InvoiceServiceVerticle"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation group: 'io.vertx', name: 'vertx-core', version: "$vertXVersion"
+    implementation group: 'io.vertx', name: 'vertx-web', version: "$vertXVersion"
+    implementation group: 'io.vertx', name: 'vertx-web-client', version: "$vertXVersion"
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: "$log4jVersion"
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$log4jVersion"
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+
+    testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
+}
+
+/**
+ * Send source code on SonarQube for analysis.
+ *
+ * Login key is a user token(admin privileges).
+ * User token has to be used as a replacement of usual login.
+ */
+task sonar(type: Exec) {
+    commandLine "./gradlew sonarqube \\\n" +
+            "  -Dsonar.projectKey=graphql-prototype \\\n" +
+            "  -Dsonar.host.url=http://localhost:${sonarPort} \\\n" +
+            "  -Dsonar.login=a781375dc7400c8f5a04f40bb61adff852a90086"
+}
