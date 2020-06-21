@@ -1,11 +1,14 @@
 package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.RestController;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,12 +16,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InvoiceRestController implements RestController {
 
-    private final InvoiceServiceVerticle service;
+    private final EventBus eventBus = Vertx.currentContext().owner().eventBus();
 
     public void create(final RoutingContext rc) {
         log.info("Started creating new invoice");
         final var invoiceAsJson = Optional.ofNullable(rc.getBodyAsJson()).orElseThrow(IllegalArgumentException::new);
-        InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")));
+        InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")),
+                Currency.getInstance(invoiceAsJson.getString("currencyCode")));
+        eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS)
         service.create(rc, invoiceAsJson);
         log.info("Invoice '{}' created successfully", invoiceAsJson);
     }

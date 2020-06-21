@@ -23,11 +23,14 @@ public class RestRouting {
         var pdfRestController = new PdfRestController(new PdfServiceVerticle());
         var invoiceRestController = new InvoiceRestController(new InvoiceServiceVerticle());
 
+        //the body handler has to be created before specifying routing
+        router.route().handler(BodyHandler.create());
+
         //invoice crud
-        router.post("/invoice").handler(invoiceRestController::create).handler(BodyHandler.create()).consumes(JSON_UTF8).produces(JSON_UTF8);
+        router.post("/invoice").handler(invoiceRestController::create).consumes(JSON_UTF8).produces(JSON_UTF8);
         router.get("/invoice/:id").handler(invoiceRestController::find).produces(JSON_UTF8);
         router.delete("/invoice/:id").handler(invoiceRestController::delete).produces(JSON_UTF8);
-        router.put("/invoice/:id").handler(invoiceRestController::replace).handler(BodyHandler.create()).consumes(JSON_UTF8).produces(JSON_UTF8);
+        router.put("/invoice/:id").handler(invoiceRestController::replace).consumes(JSON_UTF8).produces(JSON_UTF8);
 
         //pdf
         router.post("/invoice/:id/createPdf").handler(pdfRestController::create).produces(JSON_UTF8);

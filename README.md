@@ -18,6 +18,15 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * Run: run from the project root catalog: java -jar build/vertx-invoice-service.jar -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 * Debug on 5005: run from the project root catalog: java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector build/vertx-invoice-service.jar
 
+# Create currency
+* POST http://localhost:8080/invoice
+`{
+    "name": "Tomasz",
+    "surname": "Murglin",
+    "amount": "3000.0",
+    "currencyCode": "EUR"
+}`
+
 # TODO:
 * Add CDI by Guice or Dagger
 * Tests
