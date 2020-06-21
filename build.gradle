@@ -4,6 +4,13 @@ plugins {
     id "io.freefair.lombok" version "5.1.0"
 }
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
+if (JavaVersion.current() != JavaVersion.VERSION_11) {
+    throw new GradleException("This build must be run with Java 11 and curretly used is " + JavaVersion.current())
+}
+
 int sonarPort = 9000
 String vertXVersion = '3.9.1'
 String log4jVersion = '2.13.3'
@@ -41,6 +48,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-core:$log4jVersion"
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'io.vertx:vertx-config:3.9.1'
+    implementation 'com.lmax:disruptor:3.4.2'
 
     testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
 }
