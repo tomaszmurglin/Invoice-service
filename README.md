@@ -19,6 +19,8 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * Debug on 5005: run from the project root catalog: java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector build/vertx-invoice-service.jar
 
 # TODO:
+* Tests
+* Replace InMemoryStorage with h2 + reactive client
 * Hot deploy in dev mode
 * Ci/cd integration
 * Dockerization

@@ -1,7 +1,9 @@
 package com.murglin.consulting.invoice.api;
 
 import com.murglin.consulting.invoice.api.crud.InvoiceRestController;
+import com.murglin.consulting.invoice.api.crud.InvoiceServiceVerticle;
 import com.murglin.consulting.invoice.api.pdf.PdfRestController;
+import com.murglin.consulting.invoice.api.pdf.PdfServiceVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
@@ -17,14 +19,14 @@ public class RestRouting {
     public static Router createRouting(Vertx vertx) {
         Router router = Router.router(vertx);
 
-        var pdfRestController = new PdfRestController();
-        var invoiceRestController = new InvoiceRestController();
+        var pdfRestController = new PdfRestController(new PdfServiceVerticle());
+        var invoiceRestController = new InvoiceRestController(new InvoiceServiceVerticle());
 
         //invoice crud
-        router.post("/invoice").handler(invoiceRestController::create).produces(JSON_UTF8);
+        router.post("/invoice").handler(invoiceRestController::create).consumes(JSON_UTF8).produces(JSON_UTF8);
         router.get("/invoice/:id").handler(invoiceRestController::find).produces(JSON_UTF8);
         router.delete("/invoice/:id").handler(invoiceRestController::delete).produces(JSON_UTF8);
-        router.put("/invoice/:id").handler(invoiceRestController::replace).produces(JSON_UTF8);
+        router.put("/invoice/:id").handler(invoiceRestController::replace).consumes(JSON_UTF8).produces(JSON_UTF8);
 
         //pdf
         router.post("/invoice/:id/createPdf").handler(pdfRestController::create).produces(JSON_UTF8);
