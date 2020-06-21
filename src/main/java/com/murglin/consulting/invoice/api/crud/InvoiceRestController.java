@@ -21,7 +21,7 @@ public class InvoiceRestController implements RestController {
         final var invoiceAsJson = Optional.ofNullable(rc.getBodyAsJson()).orElseThrow(IllegalArgumentException::new);
         InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")));
         service.create(rc, invoiceAsJson);
-        log.info("Invoice '{}' created successfully", invoice);
+        log.info("Invoice '{}' created successfully", invoiceAsJson);
     }
 
     public void replace(final RoutingContext rc) {
