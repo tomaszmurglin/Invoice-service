@@ -8,6 +8,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -23,10 +24,10 @@ public class RestRouting {
         var invoiceRestController = new InvoiceRestController(new InvoiceServiceVerticle());
 
         //invoice crud
-        router.post("/invoice").handler(invoiceRestController::create).consumes(JSON_UTF8).produces(JSON_UTF8);
+        router.post("/invoice").handler(invoiceRestController::create).handler(BodyHandler.create()).consumes(JSON_UTF8).produces(JSON_UTF8);
         router.get("/invoice/:id").handler(invoiceRestController::find).produces(JSON_UTF8);
         router.delete("/invoice/:id").handler(invoiceRestController::delete).produces(JSON_UTF8);
-        router.put("/invoice/:id").handler(invoiceRestController::replace).consumes(JSON_UTF8).produces(JSON_UTF8);
+        router.put("/invoice/:id").handler(invoiceRestController::replace).handler(BodyHandler.create()).consumes(JSON_UTF8).produces(JSON_UTF8);
 
         //pdf
         router.post("/invoice/:id/createPdf").handler(pdfRestController::create).produces(JSON_UTF8);
@@ -39,6 +40,7 @@ public class RestRouting {
                     .put("Exception Message", rc.failure().getMessage());
             log.error("An exception occurred while processing a request." + rc.failure());
             rc.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
+            rc.response().setStatusCode(500);
             rc.response().end(error.encode());
         });
 

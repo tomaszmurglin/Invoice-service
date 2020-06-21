@@ -1,7 +1,6 @@
 package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.RestController;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
