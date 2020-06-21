@@ -15,6 +15,12 @@ import lombok.extern.log4j.Log4j2;
 public class VertxApplication extends AbstractVerticle {
 
     public static void main(String[] args) {
+        //check that async non-blocking logger is used
+        final var log4jContextSelector = System.getProperty("Log4jContextSelector");
+        if (!log4jContextSelector.equals("org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")) {
+            throw new IllegalStateException();
+        }
+
         Vertx vertx = Vertx.vertx();
 
         //http server
