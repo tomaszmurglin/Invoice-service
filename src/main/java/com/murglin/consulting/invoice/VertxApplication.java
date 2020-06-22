@@ -18,7 +18,7 @@ public class VertxApplication extends AbstractVerticle {
         //check that async non-blocking logger is used
         final var log4jContextSelector = System.getProperty("Log4jContextSelector");
         if (!"org.apache.logging.log4j.core.async.AsyncLoggerContextSelector".equals(log4jContextSelector)) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Blocking logger detected. Please use non - blocking logger in reactive app");
         }
 
         Vertx vertx = Vertx.vertx();
