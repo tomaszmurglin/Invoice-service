@@ -44,10 +44,12 @@ dependencies {
     implementation "io.vertx:vertx-core:$vertXVersion"
     implementation "io.vertx:vertx-web:$vertXVersion"
     implementation "io.vertx:vertx-web-client:$vertXVersion"
+    implementation "io.vertx:vertx-config:$vertXVersion"
+    implementation "io.vertx:vertx-web-api-contract:$vertXVersion"
+
     implementation "org.apache.logging.log4j:log4j-api:$log4jVersion"
     implementation "org.apache.logging.log4j:log4j-core:$log4jVersion"
     implementation 'org.apache.commons:commons-lang3:3.10'
-    implementation 'io.vertx:vertx-config:3.9.1'
     implementation 'com.lmax:disruptor:3.4.2'
 
     testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'

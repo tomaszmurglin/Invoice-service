@@ -11,8 +11,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PdfRestController implements RestController {
 
-    private final PdfServiceVerticle service;
-
     public void create(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started creating new pdf for invoice with id '{}'", invoiceId);
@@ -27,7 +25,7 @@ public class PdfRestController implements RestController {
         log.info("Pdf for invoice with id '{}' found successfully", invoiceId);
     }
 
-    public void cancel(final RoutingContext rc) {
+    public void cancelGenerating(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started canceling creation of new pdf for the invoice with id '{}'", invoiceId);
         service.cancel(rc, invoiceId);

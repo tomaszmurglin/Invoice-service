@@ -2,6 +2,7 @@ package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.InMemoryStorage;
 import com.murglin.consulting.invoice.api.crud.exception.InvoiceCreationException;
+import com.murglin.consulting.invoice.api.crud.model.Invoice;
 import com.murglin.consulting.invoice.vertx.Service;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -20,6 +21,7 @@ public class InvoiceServiceVerticle extends AbstractVerticle implements Service 
     @Override
     public void start() {
         eventBus.consumer(EVENT_BUSS_ADDRESS, message -> {
+            //TODO move to the repository
             final var invoice = Json.decodeValue((String) message.body(), Invoice.class);
             InMemoryStorage.ID_TO_INVOICE.put(UUID.randomUUID(), invoice);
             message.reply(message.body());
@@ -27,15 +29,15 @@ public class InvoiceServiceVerticle extends AbstractVerticle implements Service 
     }
 
     private void replace(RoutingContext rc, UUID invoiceId) {
-
+        //TODO check if exits and if not map exception to 404
     }
 
     private void delete(RoutingContext rc, UUID invoiceId) {
-
+        //TODO check if exits and if not map exception to 404
     }
 
     private void find(RoutingContext rc, UUID invoiceId) {
-
+        //TODO check if exits and if not map exception to 404
     }
 
     private void create(RoutingContext rc, JsonObject invoiceAsJson) {

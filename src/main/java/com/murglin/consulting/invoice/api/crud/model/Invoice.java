@@ -1,4 +1,4 @@
-package com.murglin.consulting.invoice.api.crud;
+package com.murglin.consulting.invoice.api.crud.model;
 
 import lombok.Value;
 

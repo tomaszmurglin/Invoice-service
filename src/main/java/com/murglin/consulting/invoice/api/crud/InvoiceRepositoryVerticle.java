@@ -1,6 +1,7 @@
 package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.InMemoryStorage;
+import com.murglin.consulting.invoice.api.crud.model.Invoice;
 import com.murglin.consulting.invoice.vertx.Repository;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;

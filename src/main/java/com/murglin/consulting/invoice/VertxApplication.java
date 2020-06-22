@@ -17,7 +17,7 @@ public class VertxApplication extends AbstractVerticle {
     public static void main(String[] args) {
         //check that async non-blocking logger is used
         final var log4jContextSelector = System.getProperty("Log4jContextSelector");
-        if (!log4jContextSelector.equals("org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")) {
+        if (!"org.apache.logging.log4j.core.async.AsyncLoggerContextSelector".equals(log4jContextSelector)) {
             throw new IllegalStateException();
         }
 
@@ -41,7 +41,7 @@ public class VertxApplication extends AbstractVerticle {
         if (result.succeeded()) {
             log.info("Successfully deployed verticle '{}'", verticleName);
         } else {
-            log.info("Cannot deploy verticle '{}'", verticleName);
+            log.error("Cannot deploy verticle '{}'", verticleName);
         }
     }
 }

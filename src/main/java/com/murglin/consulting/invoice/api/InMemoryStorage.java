@@ -1,6 +1,6 @@
 package com.murglin.consulting.invoice.api;
 
-import com.murglin.consulting.invoice.api.crud.Invoice;
+import com.murglin.consulting.invoice.api.crud.model.Invoice;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
