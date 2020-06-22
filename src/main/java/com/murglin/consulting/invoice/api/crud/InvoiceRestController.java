@@ -2,11 +2,17 @@ package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.RestController;
 import com.murglin.consulting.invoice.api.crud.exception.InvoiceCreationException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceDeletingException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceFindingException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceReplacingException;
 import com.murglin.consulting.invoice.api.crud.model.message.CreateInvoiceMessage;
+import com.murglin.consulting.invoice.api.crud.model.message.DeleteInvoiceMessage;
+import com.murglin.consulting.invoice.api.crud.model.message.FindInvoiceMessage;
 import com.murglin.consulting.invoice.api.crud.model.message.ReplaceInvoiceMessage;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -53,22 +59,40 @@ public class InvoiceRestController implements RestController {
                 rc.response().setStatusCode(200).end(replacedInvoice);
             } else {
                 log.error("Invoice replacing failed", response.cause());
-                throw new InvoiceCreationException(response.cause());
+                throw new InvoiceReplacingException(response.cause());
             }
         });
     }
 
     public void delete(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
-        log.info("Started deleting new invoice with id '{}'", invoiceId);
-        service.delete(rc, invoiceId);
-        log.info("Invoice with id '{}' deleted successfully", invoiceId);
+        log.info("Started deleting invoice with id '{}'", invoiceId);
+        final var message = new DeleteInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
+            if (response.succeeded()) {
+                final var deletedInvoice = Json.encode(response.result().body());
+                log.info("Invoice with id '{}' deleted successfully", invoiceId);
+                rc.response().setStatusCode(200).end(deletedInvoice);
+            } else {
+                log.error("Invoice deleting failed", response.cause());
+                throw new InvoiceDeletingException(response.cause());
+            }
+        });
     }
 
     public void find(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
-        log.info("Started finding new invoice with id '{}'", invoiceId);
-        service.find(rc, invoiceId);
-        log.info("Invoice with id '{}' found successfully", invoiceId);
+        log.info("Started finding invoice with id '{}'", invoiceId);
+        final var message = new FindInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
+            if (response.succeeded()) {
+                final var foundInvoice = Json.encode(response.result().body());
+                log.info("Invoice with id '{}' found successfully", invoiceId);
+                rc.response().setStatusCode(200).end(foundInvoice);
+            } else {
+                log.error("Invoice finding failed", response.cause());
+                throw new InvoiceFindingException(response.cause());
+            }
+        });
     }
 }

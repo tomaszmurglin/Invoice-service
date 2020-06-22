@@ -1,6 +1,6 @@
 # Vertx-invoice-service
 Sample reactive web app in vertx and java.
-App uses actor concurrency model (http://tutorials.jenkov.com/java-concurrency/concurrency-models.html#actors-vs-channels).
+App uses actor concurrency model (http://tutorials.jenkov.com/java-concurrency/concurrency-models.html#actors-vs-channels, https://www.baeldung.com/akka-actors-java).
 In vertx actor is called verticle. The goal of this project is learning about Vertx framework. Theres no persistence layer.
 
 # Features:
@@ -8,7 +8,7 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * PDF generation of the given invoice
 
 # Tech stack:
-* Vertx
+* Vertx (https://vertx.io/)
 * Java 11
 * Log4j2 for non-blocking logging
 * Gradle
