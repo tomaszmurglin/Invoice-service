@@ -10,10 +10,11 @@ import io.vertx.core.json.Json;
 public class InvoiceServiceVerticle extends AbstractVerticle implements Service {
 
     public static final String EVENT_BUSS_ADDRESS = "InvoiceServiceVerticle";
-    private final EventBus eventBus = vertx.eventBus();
+    private EventBus eventBus;
 
     @Override
     public void start() {
+        eventBus = vertx.eventBus();
         eventBus.consumer(EVENT_BUSS_ADDRESS, message -> {
             final var messageRepresentation = Json.decodeValue((String) message.body(), Message.class);
             final var commandName = messageRepresentation.getName();
@@ -34,7 +35,13 @@ public class InvoiceServiceVerticle extends AbstractVerticle implements Service 
     }
 
     private void create(io.vertx.core.eventbus.Message<Object> message) {
-
+        eventBus.request(InvoiceRepositoryVerticle.EVENT_BUSS_ADDRESS, message.body(), responseFromRepositoryVerticle -> {
+            if (responseFromRepositoryVerticle.succeeded()) {
+                message.reply(responseFromRepositoryVerticle.result());
+            } else {
+                message.fail(500, responseFromRepositoryVerticle.cause().toString());
+            }
+        });
     }
 
     private void replace(io.vertx.core.eventbus.Message<Object> message) {

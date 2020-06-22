@@ -42,6 +42,7 @@ public class VertxApplication extends AbstractVerticle {
             log.info("Successfully deployed verticle '{}'", verticleName);
         } else {
             log.error("Cannot deploy verticle '{}'", verticleName);
+            throw new IllegalStateException();
         }
     }
 }

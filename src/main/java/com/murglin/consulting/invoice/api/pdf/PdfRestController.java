@@ -14,28 +14,28 @@ public class PdfRestController implements RestController {
     public void create(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started creating new pdf for invoice with id '{}'", invoiceId);
-        service.create(rc, invoiceId);
-        log.info("Pdf for invoice with id '{}' created successfully", invoiceId);
+        throw new UnsupportedOperationException("Not implemented yet");
+//        log.info("Pdf for invoice with id '{}' created successfully", invoiceId);
     }
 
     public void find(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started finding pdf for the invoice with id '{}'", invoiceId);
-        service.find(rc, invoiceId);
-        log.info("Pdf for invoice with id '{}' found successfully", invoiceId);
+        throw new UnsupportedOperationException("Not implemented yet");
+//        log.info("Pdf for invoice with id '{}' found successfully", invoiceId);
     }
 
     public void cancelGenerating(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started canceling creation of new pdf for the invoice with id '{}'", invoiceId);
-        service.cancel(rc, invoiceId);
-        log.info("Cancelled successfully generation of new pdf for the invoice with id '{}'", invoiceId);
+        throw new UnsupportedOperationException("Not implemented yet");
+//        log.info("Cancelled successfully generation of new pdf for the invoice with id '{}'", invoiceId);
     }
 
     public void delete(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started deleting pdf for the invoice with id '{}'", invoiceId);
-        service.delete(rc, invoiceId);
-        log.info("Deleted pdf for the invoice with id '{}' successfully", invoiceId);
+        throw new UnsupportedOperationException("Not implemented yet");
+//        log.info("Deleted pdf for the invoice with id '{}' successfully", invoiceId);
     }
 }

@@ -12,10 +12,11 @@ import java.util.UUID;
 public class InvoiceRepositoryVerticle extends AbstractVerticle implements Repository {
 
     public static final String EVENT_BUSS_ADDRESS = "InvoiceRepositoryVerticle";
-    private final EventBus eventBus = vertx.eventBus();
+    private EventBus eventBus;
 
     @Override
     public void start() {
+        eventBus = vertx.eventBus();
         eventBus.consumer(EVENT_BUSS_ADDRESS, message -> {
             final var invoice = Json.decodeValue((String) message.body(), Invoice.class);
             InMemoryStorage.ID_TO_INVOICE.put(UUID.randomUUID(), invoice);

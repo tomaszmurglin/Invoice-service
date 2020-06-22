@@ -35,7 +35,7 @@ public class InvoiceRestController implements RestController {
         final var message = new CreateInvoiceMessage(this.getClass().getName(), invoiceAsJson);
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
-                final var createdInvoice = Json.encode(response.result().body());
+                final var createdInvoice = (String) response.result().body();
                 log.info("Invoice '{}' created successfully", createdInvoice);
                 rc.response().setStatusCode(201).end(createdInvoice);
             } else {
@@ -54,7 +54,7 @@ public class InvoiceRestController implements RestController {
         final var message = new ReplaceInvoiceMessage(this.getClass().getName(), invoiceAsJson.put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
-                final var replacedInvoice = Json.encode(response.result().body());
+                final var replacedInvoice = (String) response.result().body();
                 log.info("Invoice with id '{}' replaced successfully", invoiceId);
                 rc.response().setStatusCode(200).end(replacedInvoice);
             } else {
@@ -70,7 +70,7 @@ public class InvoiceRestController implements RestController {
         final var message = new DeleteInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
-                final var deletedInvoice = Json.encode(response.result().body());
+                final var deletedInvoice = (String) response.result().body();
                 log.info("Invoice with id '{}' deleted successfully", invoiceId);
                 rc.response().setStatusCode(200).end(deletedInvoice);
             } else {
@@ -86,7 +86,7 @@ public class InvoiceRestController implements RestController {
         final var message = new FindInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
-                final var foundInvoice = Json.encode(response.result().body());
+                final var foundInvoice = (String) response.result().body();
                 log.info("Invoice with id '{}' found successfully", invoiceId);
                 rc.response().setStatusCode(200).end(foundInvoice);
             } else {

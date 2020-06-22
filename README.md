@@ -29,6 +29,7 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 
 # TODO:
 * Add CDI by Guice or Dagger
+* Add transactionality
 * Tests
 * Replace InMemoryStorage with h2 + reactive client
 * Hot deploy in dev mode
@@ -36,3 +37,5 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * Dockerization
 * Api doc
 * CORS setup
+* Extended domain model
+* Implement more features
