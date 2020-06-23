@@ -20,6 +20,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                 startHttpServer(readConfigResult, startPromise);
             } else {
                 log.error("Cannot read configuration file", readConfigResult.cause());
+                startPromise.fail(readConfigResult.cause());
             }
         });
     }
