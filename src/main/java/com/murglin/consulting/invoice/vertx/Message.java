@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
-public class Message implements Stereotype {
+public abstract class Message implements Stereotype {
 
     private final UUID id;
     private final String name;
