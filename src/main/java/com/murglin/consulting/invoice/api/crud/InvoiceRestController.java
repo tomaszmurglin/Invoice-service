@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class InvoiceRestController implements RestController {
         final var invoiceAsJson = Optional.ofNullable(rc.getBodyAsJson()).orElseThrow(IllegalArgumentException::new);
         InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")),
                 invoiceAsJson.getString("currencyCode"));
-        final var message = new CreateInvoiceMessage(this.getClass().getName(), invoiceAsJson);
+        final var message = new CreateInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), invoiceAsJson);
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var createdInvoice = (String) response.result().body();
@@ -51,7 +52,7 @@ public class InvoiceRestController implements RestController {
         final var invoiceAsJson = Optional.ofNullable(rc.getBodyAsJson()).orElseThrow(IllegalArgumentException::new);
         InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")),
                 invoiceAsJson.getString("currencyCode"));
-        final var message = new ReplaceInvoiceMessage(this.getClass().getName(), invoiceAsJson.put("id", invoiceId));
+        final var message = new ReplaceInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(),this.getClass().getName(), invoiceAsJson.put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var replacedInvoice = (String) response.result().body();
@@ -67,7 +68,7 @@ public class InvoiceRestController implements RestController {
     public void delete(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started deleting invoice with id '{}'", invoiceId);
-        final var message = new DeleteInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        final var message = new DeleteInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(),this.getClass().getName(), new JsonObject().put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var deletedInvoice = (String) response.result().body();
@@ -83,7 +84,7 @@ public class InvoiceRestController implements RestController {
     public void find(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started finding invoice with id '{}'", invoiceId);
-        final var message = new FindInvoiceMessage(this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        final var message = new FindInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(),this.getClass().getName(), new JsonObject().put("id", invoiceId));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var foundInvoice = (String) response.result().body();

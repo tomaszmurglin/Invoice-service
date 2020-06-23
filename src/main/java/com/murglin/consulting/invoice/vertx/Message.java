@@ -1,25 +1,27 @@
 package com.murglin.consulting.invoice.vertx;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.murglin.consulting.invoice.api.jackson.MessageDeserializer;
 import io.vertx.core.json.JsonObject;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
-public abstract class Message implements Stereotype {
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonDeserialize(using = MessageDeserializer.class)
+public class Message implements Stereotype {
 
-    private final UUID id;
-    private final String name;
-    private final OffsetDateTime timestamp;
-    private final String sourceName;
-    private final JsonObject payload;
-
-    public Message(String sourceName, JsonObject payload, String name) {
-        this.id = UUID.randomUUID();
-        this.name = name;
-        this.timestamp = OffsetDateTime.now();
-        this.sourceName = sourceName;
-        this.payload = payload;
-    }
+    private UUID id;
+    private String name;
+    private OffsetDateTime creationTimestamp;
+    private String sourceName;
+    private JsonObject payload;
 }
