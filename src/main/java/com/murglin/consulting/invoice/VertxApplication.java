@@ -11,6 +11,8 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import lombok.extern.log4j.Log4j2;
 
+import static com.murglin.consulting.invoice.vertx.Configuration.createConfigRetriever;
+
 @Log4j2
 public class VertxApplication extends AbstractVerticle {
 
@@ -23,17 +25,26 @@ public class VertxApplication extends AbstractVerticle {
 
         Vertx vertx = Vertx.vertx();
 
-        //http server
-        vertx.deployVerticle(HttpServerVerticle.class, new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors()),
-                VertxApplication::handleVerticleDeployment);
+        final var appConfigRetriever = createConfigRetriever(vertx);
+        appConfigRetriever.getConfig(readConfigResult -> {
+            if (readConfigResult.succeeded()) {
+                final var config = readConfigResult.result();
+                //http server
+                vertx.deployVerticle(HttpServerVerticle.class, new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors()).setConfig(config),
+                        VertxApplication::handleVerticleDeployment);
 
-        //invoice
-        vertx.deployVerticle(InvoiceServiceVerticle.class, new DeploymentOptions(), VertxApplication::handleVerticleDeployment);
-        vertx.deployVerticle(InvoiceRepositoryVerticle.class, new DeploymentOptions(), VertxApplication::handleVerticleDeployment);
+                //invoice
+                vertx.deployVerticle(InvoiceServiceVerticle.class, new DeploymentOptions().setConfig(config), VertxApplication::handleVerticleDeployment);
+                vertx.deployVerticle(InvoiceRepositoryVerticle.class, new DeploymentOptions().setConfig(config), VertxApplication::handleVerticleDeployment);
 
-        //pdf
-        vertx.deployVerticle(PdfServiceVerticle.class, new DeploymentOptions(), VertxApplication::handleVerticleDeployment);
-        vertx.deployVerticle(PdfRepositoryVerticle.class, new DeploymentOptions(), VertxApplication::handleVerticleDeployment);
+                //pdf
+                vertx.deployVerticle(PdfServiceVerticle.class, new DeploymentOptions().setConfig(config), VertxApplication::handleVerticleDeployment);
+                vertx.deployVerticle(PdfRepositoryVerticle.class, new DeploymentOptions().setConfig(config), VertxApplication::handleVerticleDeployment);
+            } else {
+                log.error("Cannot read configuration file", readConfigResult.cause());
+                throw new IllegalStateException("Cannot read configuration file", readConfigResult.cause());
+            }
+        });
     }
 
     private static void handleVerticleDeployment(AsyncResult<String> result) {
