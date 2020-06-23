@@ -28,6 +28,7 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 }`
 
 # TODO:
+* Configure timeouts
 * Add CDI by Guice or Dagger
 * Add transactionality
 * Tests
