@@ -26,7 +26,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
             throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         var id = UUID.fromString(node.get("id").asText());
-        var creationTimestamp = OffsetDateTime.now();
+        var creationTimestamp = //TODO
         var name = node.get("name").asText();
         var sourceName = node.get("sourceName").asText();
         var payload = new JsonObject(node.get("payload").toString());
