@@ -31,7 +31,7 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * Add CDI by Guice or Dagger
 * Add transactionality
 * Add event sourcing
-* Tests using spock and junit
+* Tests using spock and junit + contract tests for messages
 * Replace InMemoryStorage with h2 + reactive client
 * Hot deploy in dev mode
 * Ci/cd integration
