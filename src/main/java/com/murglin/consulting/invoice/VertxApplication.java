@@ -5,6 +5,7 @@ import com.murglin.consulting.invoice.api.crud.InvoiceRepositoryVerticle;
 import com.murglin.consulting.invoice.api.crud.InvoiceServiceVerticle;
 import com.murglin.consulting.invoice.api.pdf.PdfRepositoryVerticle;
 import com.murglin.consulting.invoice.api.pdf.PdfServiceVerticle;
+import com.murglin.consulting.invoice.vertx.Configuration;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
@@ -24,6 +25,8 @@ public class VertxApplication extends AbstractVerticle {
         }
 
         Vertx vertx = Vertx.vertx();
+
+        Configuration.configureJackson();
 
         final var appConfigRetriever = createConfigRetriever(vertx);
         appConfigRetriever.getConfig(readConfigResult -> {

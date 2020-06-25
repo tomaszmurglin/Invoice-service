@@ -5,6 +5,7 @@ import com.murglin.consulting.invoice.vertx.Message;
 import com.murglin.consulting.invoice.vertx.Service;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.ReplyException;
 import io.vertx.core.json.Json;
 
 public class InvoiceServiceVerticle extends AbstractVerticle implements Service {
@@ -30,29 +31,37 @@ public class InvoiceServiceVerticle extends AbstractVerticle implements Service 
             if (InvoiceCommand.REPLACE_INVOICE.getName().equals(commandName)) {
                 replace(message);
             }
-            message.reply(message.body());
         });
     }
 
     private void create(io.vertx.core.eventbus.Message<Object> message) {
-        eventBus.request(InvoiceRepositoryVerticle.EVENT_BUSS_ADDRESS, message.body(), responseFromRepositoryVerticle -> {
-            if (responseFromRepositoryVerticle.succeeded()) {
-                message.reply(responseFromRepositoryVerticle.result());
-            } else {
-                message.fail(500, responseFromRepositoryVerticle.cause().toString());
-            }
-        });
+        forwardMessageToRepository(message);
     }
 
     private void replace(io.vertx.core.eventbus.Message<Object> message) {
-        //TODO check if exits and if not map exception to 404
+        forwardMessageToRepository(message);
     }
 
     private void delete(io.vertx.core.eventbus.Message<Object> message) {
-        //TODO check if exits and if not map exception to 404
+        forwardMessageToRepository(message);
     }
 
     private void find(io.vertx.core.eventbus.Message<Object> message) {
-        //TODO check if exits and if not map exception to 404
+        forwardMessageToRepository(message);
+    }
+
+    private void forwardMessageToRepository(io.vertx.core.eventbus.Message<Object> message) {
+        eventBus.request(InvoiceRepositoryVerticle.EVENT_BUSS_ADDRESS, message.body(), responseFromRepositoryVerticle -> {
+            if (responseFromRepositoryVerticle.succeeded()) {
+                message.reply(Json.encode(responseFromRepositoryVerticle.result().body()));
+            } else {
+                final var cause = responseFromRepositoryVerticle.cause();
+                if (cause instanceof ReplyException) {
+                    message.fail(((ReplyException) cause).failureCode(), cause.getMessage());
+                } else {
+                    message.fail(500, responseFromRepositoryVerticle.cause().toString());
+                }
+            }
+        });
     }
 }
