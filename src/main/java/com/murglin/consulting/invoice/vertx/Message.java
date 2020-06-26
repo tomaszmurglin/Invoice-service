@@ -1,8 +1,7 @@
 package com.murglin.consulting.invoice.vertx;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.murglin.consulting.invoice.api.jackson.MessageDeserializer;
+import com.murglin.consulting.invoice.vertx.jackson.MessageDeserializer;
 import io.vertx.core.json.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

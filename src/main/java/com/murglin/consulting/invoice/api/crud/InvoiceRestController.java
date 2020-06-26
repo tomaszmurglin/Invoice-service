@@ -1,7 +1,10 @@
 package com.murglin.consulting.invoice.api.crud;
 
 import com.murglin.consulting.invoice.api.RestController;
-import com.murglin.consulting.invoice.api.crud.exception.*;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceCreationException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceDeletingException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceFindingException;
+import com.murglin.consulting.invoice.api.crud.exception.InvoiceReplacingException;
 import com.murglin.consulting.invoice.api.crud.model.message.CreateInvoiceMessage;
 import com.murglin.consulting.invoice.api.crud.model.message.DeleteInvoiceMessage;
 import com.murglin.consulting.invoice.api.crud.model.message.FindInvoiceMessage;
@@ -50,7 +53,7 @@ public class InvoiceRestController implements RestController {
         final var invoiceAsJson = Optional.ofNullable(rc.getBodyAsJson()).orElseThrow(IllegalArgumentException::new);
         InvoiceValidator.validate(invoiceAsJson.getString("name"), invoiceAsJson.getString("surname"), new BigDecimal(invoiceAsJson.getString("amount")),
                 invoiceAsJson.getString("currencyCode"));
-        final var message = new ReplaceInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), invoiceAsJson.put("id", invoiceId));
+        final var message = new ReplaceInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), invoiceAsJson.put("id", invoiceId.toString()));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var replacedInvoice = (String) Json.decodeValue((String) response.result().body());
@@ -61,7 +64,8 @@ public class InvoiceRestController implements RestController {
                 if (cause instanceof ReplyException) {
                     final var failureCode = ((ReplyException) cause).failureCode();
                     if (failureCode == 404) {
-                        throw new InvoiceNotFoundException();
+                        log.info("Invoice with id '{}' has not been found", invoiceId);
+                        rc.response().setStatusCode(404).end("Invoice not found");
                     }
                 } else {
                     log.error("Invoice replacing failed", response.cause());
@@ -74,7 +78,7 @@ public class InvoiceRestController implements RestController {
     public void delete(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started deleting invoice with id '{}'", invoiceId);
-        final var message = new DeleteInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        final var message = new DeleteInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), new JsonObject().put("id", invoiceId.toString()));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var deletedInvoice = (String) Json.decodeValue((String) response.result().body());
@@ -85,7 +89,8 @@ public class InvoiceRestController implements RestController {
                 if (cause instanceof ReplyException) {
                     final var failureCode = ((ReplyException) cause).failureCode();
                     if (failureCode == 404) {
-                        throw new InvoiceNotFoundException();
+                        log.info("Invoice with id '{}' has not been found", invoiceId);
+                        rc.response().setStatusCode(404).end("Invoice not found");
                     }
                 } else {
                     log.error("Invoice deleting failed", response.cause());
@@ -98,7 +103,7 @@ public class InvoiceRestController implements RestController {
     public void find(final RoutingContext rc) {
         var invoiceId = UUID.fromString(rc.request().getParam("id"));
         log.info("Started finding invoice with id '{}'", invoiceId);
-        final var message = new FindInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), new JsonObject().put("id", invoiceId));
+        final var message = new FindInvoiceMessage(UUID.randomUUID(), OffsetDateTime.now(), this.getClass().getName(), new JsonObject().put("id", invoiceId.toString()));
         eventBus.request(InvoiceServiceVerticle.EVENT_BUSS_ADDRESS, Json.encode(message), response -> {
             if (response.succeeded()) {
                 final var foundInvoice = (String) Json.decodeValue((String) response.result().body());
@@ -109,7 +114,8 @@ public class InvoiceRestController implements RestController {
                 if (cause instanceof ReplyException) {
                     final var failureCode = ((ReplyException) cause).failureCode();
                     if (failureCode == 404) {
-                        throw new InvoiceNotFoundException();
+                        log.info("Invoice with id '{}' has not been found", invoiceId);
+                        rc.response().setStatusCode(404).end("Invoice not found");
                     }
                 } else {
                     log.error("Invoice finding failed", response.cause());
