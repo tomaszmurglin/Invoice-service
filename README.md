@@ -46,7 +46,7 @@ Content-Type: application/json; charset=UTF-8
 
 # TODO:
 * Exception handling in rest controllers
-* Pdf things
+* Pdf things with pdf creator run in worker verticle
 * Find all invoices and pdfs endpoint
 * Add CDI by Guice or Dagger
 * Add transactionality
