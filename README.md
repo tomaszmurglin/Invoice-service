@@ -1,5 +1,5 @@
 # Vertx-invoice-service
-Sample reactive web app in vertx and java.
+Sample reactive, event-driven web app in vertx and java.
 App uses actor concurrency model (http://tutorials.jenkov.com/java-concurrency/concurrency-models.html#actors-vs-channels, https://www.baeldung.com/akka-actors-java).
 In vertx actor is called verticle. The goal of this project is learning about Vertx framework. Theres no persistence layer.
 
