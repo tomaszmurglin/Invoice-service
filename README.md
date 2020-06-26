@@ -18,8 +18,25 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 * Run: run from the project root catalog: java -jar build/vertx-invoice-service.jar -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 * Debug on 5005: run from the project root catalog: java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector build/vertx-invoice-service.jar
 
-# Create currency
+# Create invoice
 * POST http://localhost:8080/invoice
+Content-Type: application/json; charset=UTF-8
+`{
+    "name": "Tomasz",
+    "surname": "Murglin",
+    "amount": "3000.0",
+    "currencyCode": "EUR"
+}`
+
+# Delete invoice
+* DELETE http://localhost:8080/invoice/{invoiceId}
+
+# Find invoice
+* Get http://localhost:8080/invoice/{invoiceId}
+
+# Replace invoice
+* POST http://localhost:8080/invoice
+Content-Type: application/json; charset=UTF-8
 `{
     "name": "Tomasz",
     "surname": "Murglin",
@@ -28,6 +45,9 @@ In vertx actor is called verticle. The goal of this project is learning about Ve
 }`
 
 # TODO:
+* Exception handling in rest controllers
+* Pdf things with pdf creator run in worker verticle
+* Find all invoices and pdfs endpoint
 * Add CDI by Guice or Dagger
 * Add transactionality
 * Add event sourcing

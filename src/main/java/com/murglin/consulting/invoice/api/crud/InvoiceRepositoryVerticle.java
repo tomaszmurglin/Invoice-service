@@ -11,11 +11,11 @@ import io.vertx.core.json.Json;
 
 import java.util.UUID;
 
-import static com.murglin.consulting.invoice.api.crud.exception.InvoiceNotFoundException.INVOICE_DOESNT_EXIST;
 
 public class InvoiceRepositoryVerticle extends AbstractVerticle implements Repository {
 
     public static final String EVENT_BUSS_ADDRESS = "InvoiceRepositoryVerticle";
+    private static final String INVOICE_NOT_FOUND = "Invoice not found";
     private EventBus eventBus;
 
     @Override
@@ -49,7 +49,7 @@ public class InvoiceRepositoryVerticle extends AbstractVerticle implements Repos
     private void handleDelete(Message messageRepresentation, io.vertx.core.eventbus.Message<Object> message) {
         final var id = UUID.fromString(messageRepresentation.getPayload().getString("id"));
         if (!InMemoryStorage.ID_TO_INVOICE.containsKey(id)) {
-            message.fail(404, INVOICE_DOESNT_EXIST);
+            message.fail(404, INVOICE_NOT_FOUND);
         }
         final var invoice = InMemoryStorage.ID_TO_INVOICE.remove(id);
         message.reply(Json.encode(invoice));
@@ -58,7 +58,7 @@ public class InvoiceRepositoryVerticle extends AbstractVerticle implements Repos
     private void handleFind(Message messageRepresentation, io.vertx.core.eventbus.Message<Object> message) {
         final var id = UUID.fromString(messageRepresentation.getPayload().getString("id"));
         if (!InMemoryStorage.ID_TO_INVOICE.containsKey(id)) {
-            message.fail(404, INVOICE_DOESNT_EXIST);
+            message.fail(404, INVOICE_NOT_FOUND);
         }
         final var invoice = InMemoryStorage.ID_TO_INVOICE.get(id);
         message.reply(Json.encode(invoice));
@@ -67,9 +67,10 @@ public class InvoiceRepositoryVerticle extends AbstractVerticle implements Repos
     private void handleReplace(Message messageRepresentation, io.vertx.core.eventbus.Message<Object> message) {
         final var id = UUID.fromString(messageRepresentation.getPayload().getString("id"));
         if (!InMemoryStorage.ID_TO_INVOICE.containsKey(id)) {
-            message.fail(404, INVOICE_DOESNT_EXIST);
+            message.fail(404, INVOICE_NOT_FOUND);
         }
-        final var invoice = InMemoryStorage.ID_TO_INVOICE.put(id, Invoice.ofMessage(messageRepresentation, id));
-        message.reply(Json.encode(invoice));
+        final var invoiceReplacement = Invoice.ofMessage(messageRepresentation, id);
+        InMemoryStorage.ID_TO_INVOICE.put(id, invoiceReplacement);
+        message.reply(Json.encode(invoiceReplacement));
     }
 }
