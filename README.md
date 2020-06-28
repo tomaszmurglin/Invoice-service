@@ -1,3 +1,7 @@
+<p align="left">
+<a href="https://en.wikipedia.org/wiki/Representational_state_transfer"><img src="https://img.shields.io/badge/interface-REST-brightgreen.svg?longCache=true&style=flat-square"></a>
+</p>
+
 # Vertx-invoice-service
 Sample reactive, event-driven web app in vertx and java.
 App uses actor concurrency model (http://tutorials.jenkov.com/java-concurrency/concurrency-models.html#actors-vs-channels, https://www.baeldung.com/akka-actors-java).
